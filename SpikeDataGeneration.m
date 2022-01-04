@@ -32,7 +32,7 @@ func_lambda =  @(x,theta) exp(theta(1) - ((x-theta(2)).^2)./(2.*theta(3).^2));
 
 
 % spike data generation
-J = 100000;
+J = 40000;
 delta_t_simulation = T/J;
 t_simulation = delta_t_simulation:delta_t_simulation:T;
 % time index: 1, ... , J
@@ -44,12 +44,12 @@ mu_linear = func_mu_linear(t_simulation);
 sigma_linear = func_sigma_linear(t_simulation);
 theta_linear = [alpha_linear;mu_linear;sigma_linear];
 
-u = zeros(1,J);
+u_linear = zeros(1,J);
 for i = 1:1:J
     lambda = func_lambda( x(i), theta_linear(:,i));
-    u(i) = binornd(1, lambda*delta_t_simulation);
+    u_linear(i) = binornd(1, lambda*delta_t_simulation);
 end
-index_spike_linear = find(u~=0);
+index_spike_linear = find(u_linear~=0);
 t_spike_linear = t_simulation(index_spike_linear);
 figure(1);
 plot(t_spike_linear, x(index_spike_linear),'.');
@@ -63,21 +63,27 @@ mu_jump = func_mu_jump(t_simulation);
 sigma_jump = func_sigma_jump(t_simulation);
 theta_jump = [alpha_jump;mu_jump;sigma_jump];
 
-u = zeros(1,J);
+u_jump = zeros(1,J);
+rec_lambda = zeros(1,J);
 for i = 1:1:J
     lambda = func_lambda( x(i), theta_jump(:,i));
-    u(i) = binornd(1, lambda*delta_t_simulation);
+    u_jump(i) = binornd(1, lambda*delta_t_simulation);
+    rec_lambda(i) = lambda;
 end
-index_spike_jump = find(u~=0);
+index_spike_jump = find(u_jump~=0);
 t_spike_jump = t_simulation(index_spike_jump);
 figure(2);
 plot(t_spike_jump, x(index_spike_jump),'.');
 hold on;
 plot(t_simulation,x,'-');
 
-% save simulation data
-save('dataSpikeSimulation.mat','speed', ... 
-                               'distance', ...
-                               'T', ...
-                               'func_x', ...
-                               't_spike_linear','t_spike_jump');
+% % save simulation data
+% save('dataSpikeSimulation.mat','speed', ... 
+%                                'distance', ...
+%                                'T', ...
+%                                'func_x', ...
+%                                'func_lambda',...
+%                                't_spike_linear','t_spike_jump', ...
+%                                'J', ...
+%                                'u_linear', ...
+%                                'u_jump');
