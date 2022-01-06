@@ -14,18 +14,30 @@ func_beta_4 = @(t) (0<t & t<=400).*0 - ...
 func_beta_5 = @(t) 2.5*ones(size(t));
 func_beta_6 = @(t) -2.5*ones(size(t));
 
-mu = log(1);
+exp_mu = 1;
 
-func_lambda = @(theta) exp(mu+theta(2:end)*theta(1));
+func_lambda = @(theta) exp_mu*exp(theta(2:end)*theta(1));
 
 t_step = 0.001; % Unit: s
 t_simulation = 0:t_step:T;
 
 var_ita_v = 2.5e-5;
-v_sim = zeros(size(t_simulation));
-for i = 2:length(t_simulation)
-    v_sim(i) = v_sim(i-1) + normrnd(0, var_ita_v);
-end
+% drift = 0;
+% std = sqrt(var_ita_v);         % std = sqrt(variance)
+% pd = makedist('Normal',drift,std);
+% nsteps = T/t_step;
+% Z = random(pd,nsteps,1);
+% X = [0; cumsum(Z)];
+% plot(0:nsteps,X)          % alternatively:  stairs(0:nsteps,X)   
+
+dv_sim = normrnd(0, sqrt(var_ita_v),size(t_simulation));
+v_sim = cumsum(dv_sim);
+% v_sim = zeros(size(t_simulation));
+% for i = 2:length(t_simulation)
+%     v_sim(i) = dv_sim(i) + 0.99*v_sim(i-1);
+% end
+v_sim = v_sim/max(abs(v_sim));
+
 func_v = @(t) (0<=t & t<=T).*v_sim(round(t./t_step)+1); % t with unit s, look up for real time velocity.
 
 J = 40000;
@@ -42,9 +54,10 @@ beta_6 = func_beta_6(t_simulation);
 
 u = zeros(6,length(t_simulation));
 rec_lambda = zeros(6,length(t_simulation));
-for i = 1:1:J
+for i = 1:1:length(t_simulation)
     lambda = func_lambda([v(i) beta_1(i) beta_2(i) beta_3(i) beta_4(i) beta_5(i) beta_6(i)]);
     u(:,i) = binornd(1, lambda*delta_t_simulation)';
+%     u(:,i) = binornd(1, lambda*t_step)';
     rec_lambda(:,i) = lambda';
 end
 t_spike_1 = t_simulation(u(1,:)~=0);
@@ -70,7 +83,8 @@ save('dataSpikeTrainDecoding.mat','func_lambda',...
                                   't_spike_6', ...
                                   'func_v',...
                                   'v_sim',...
-                                  'mu',...
+                                  'rec_lambda',...
+                                  'u',...
                                   'T');
                             
 %%
