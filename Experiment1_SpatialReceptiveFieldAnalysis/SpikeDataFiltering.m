@@ -1,8 +1,8 @@
 clc;clear;close all;
 
-index_experiment = 2;
-index_param = [1,2,3];
-index_method = [1,2,3,4];
+index_experiment = 2; % 1 for data_linear, 2 for data_jump.
+index_param = [1,2,3]; % 1 for alpha, 2 for mu, 3 for sigma.
+index_method = [1,2,3,4]; % 1 for Pass-By-Pass, 2 for EKF, 3 for SDPPF, 4 for SSPPF
 %% Load data
 load('dataSpikeSimulation.mat');
 

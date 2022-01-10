@@ -1,6 +1,4 @@
 function [t_back_forth, theta,ISI] = Function_PassByPass( t_spike, T, func_x, lambda, distance, speed )
-%FUNCTION_PASSBYPASS 此处显示有关此函数的摘要
-%   此处显示详细说明
 
 T_pass = 2*distance/speed;
 

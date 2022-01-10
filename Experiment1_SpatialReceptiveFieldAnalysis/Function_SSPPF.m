@@ -1,6 +1,4 @@
 function [t_observation, theta, W, ISI ] = Function_SSPPF(t_spike, T, func_x, lambda, grad, hessan)
-%FUNCTION_SSPPF 此处显示有关此函数的摘要
-%   此处显示详细说明
 
 F = eye(3);
 Q = diag([10^(-5), 10^(-3), 10^(-4)]);

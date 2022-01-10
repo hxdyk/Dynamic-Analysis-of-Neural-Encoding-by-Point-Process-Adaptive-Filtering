@@ -1,6 +1,4 @@
 function  [t_observation, theta,ISI ] = Function_SDPPF(t_spike, T, func_x, lambda, grad)
-%FUNCTION_SDPPF 此处显示有关此函数的摘要
-%   此处显示详细说明
 
 % observation config
 dt_observation = 0.02;
